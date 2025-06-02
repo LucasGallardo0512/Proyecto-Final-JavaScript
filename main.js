@@ -1,95 +1,103 @@
-const usuario = "tuti"
-const contrasena = "tierno"
 
-let usuarioIngresado = prompt("Ingrese su nombre de usuario")
-let contrasenaIngresada = prompt("Ingrese su contraseña")
-let seLogueo = false
-let bandera = true
+const notas = []
+const notasAprobadas = []
+const notasSobresalientes = []
+const notasDesaprobadas = []
 
-while (bandera){
-    if (usuarioIngresado === usuario && contrasenaIngresada === contrasena){
-        alert("Muy bien hermano, lo lograste")
-        seLogueo = true
-        bandera = false
-    }else {
-        alert("no pelotudo, ya te dije cual es el usuario y la contraseña")
-        let quiereSeguir = confirm("¿Quiere seguir intentando?")
-        if(!quiereSeguir){
-            bandera = false
+function comprobarNum(prompted, num1, num2, mensaje) {
+    while (isNaN(prompted) || prompted < num1 || prompted > num2) {
+        alert("No es un número válido")
+        prompted = Number(prompt(mensaje))
+    }
+    return prompted
+}
+
+function agregarNotas() {
+    let cantidad = Number(prompt("Cuántas notas deseás ingresar?"))
+    cantidad = comprobarNum(cantidad, 0, Infinity, "Cuántas notas deseás ingresar?")
+    for (let i = 0; i < cantidad; i++) {
+        let notasPrompt = Number(prompt(`Introduzca la nota n° ${i + 1}`))
+        notasPrompt = comprobarNum(notasPrompt, 1, 10, `Introduzca la nota n° ${i + 1}`)
+        notas.push(notasPrompt)
+    }
+}
+
+function clasificarNota(lista, limiteInf, limiteSup) { 
+    lista.splice(0, lista.length)
+    for (let i = 0; i < notas.length; i++) {
+        if (notas[i] < limiteInf || notas[i] > limiteSup) {
+            continue
         }else {
-        usuarioIngresado = prompt("Ingrese su nombre de usuario")
-        contrasenaIngresada = prompt("Ingrese su contraseña")
+            lista.push(notas[i])
         }
     }
 }
 
-if (seLogueo){
-    let saldoInicial = Number(prompt("Con cuanta guita queres empezar?"))
+function actualizarListas() {
+    clasificarNota(notasAprobadas, 7, 10)
+    clasificarNota(notasSobresalientes, 9, 10)
+    clasificarNota(notasDesaprobadas, 1, 6)
+}
 
-    if (isNaN(saldoInicial)){
-        saldoInicial = null
+agregarNotas()
+let notasIngresadas = true
+actualizarListas()
+
+function calcularPromedio(lista) {
+    let suma = 0;
+    for (let i = 0; i < lista.length; i++) {
+        suma += lista[i];
     }
+    return (suma / lista.length).toFixed(2);
+}
 
-    bandera = true
+function mostrarLista(nombre, lista) {
+    if (lista.length === 0) {
+        alert(`No hay notas ${nombre} todavía.`)
+    } else {
+        alert(`Las notas ${nombre} son:\n  -  ${lista.join("\n  -  ")}`)
+    }
+}
 
-    let saldo = saldoInicial ?? 0
-    let numPrompt = 0
-    let deuda = 0
-    const menuText = "Que queres hacer bro?\n 1- Ver saldo\n 2- Ingresar tutidolares\n 3- Retirar tutidolares\n 4- Pedir prestamo\n 5- Ver deuda\n 6- Pagar deuda\n 0- Salir"
+const menuText = "Qué querés ver?\n 1- Ver todas las Notas\n 2- Agregar notas\n 3- Aprobadas\n 4- Sobresalientes\n 5- Desaprobadas\n 6- Ver promedio\n 7- Salir"
 
-    while (bandera){
-        let menu = Number(prompt(menuText))
-
-        while (isNaN(menu)){
-            alert("Lo manejas con los numeros boludazo")
-            menu = Number(prompt(menuText))
-        }
-
-        switch (menu) {
-            case 1:
-                alert(`Tu saldo es de $${saldo.toFixed(2)} tutidolares`)
-                break;
-            case 2: 
-                numPrompt = Number(prompt("Cuanta guita queres meter?"))
-                while (isNaN(numPrompt) || numPrompt < 0){
-                    alert("Valor invalido")
-                    numPrompt = Number(prompt("Cuanta guita queres meter?"))
-                }
-                saldo += numPrompt
-                break;
-            case 3:
-                numPrompt = Number(prompt("Cuanta guita queres sacar?"))
-                while (isNaN(numPrompt) || numPrompt < 0 || numPrompt > saldo){
-                    alert("Valor invalido")
-                    numPrompt = Number(prompt("Cuanta guita queres sacar?"))
-                }
-                saldo -= numPrompt
-                break;
-            case 4:
-                numPrompt = Number(prompt("Cuanta guita queres pedir?"))
-                while (isNaN(numPrompt) || numPrompt < 0){
-                    alert("Valor invalido")
-                    numPrompt = Number(prompt("Cuanta guita queres pedir?"))
-                }
-                saldo += numPrompt
-                deuda += numPrompt * 1.4
-                break;
-            case 5:
-                alert(`Tu deuda es de $${deuda.toFixed(2)} tutidolares`)
-                break;
-            case 6:
-                alert(`Tu deuda es de $${deuda.toFixed(2)} tutidolares`)
-                numPrompt = Number(prompt("Cuanto queres pagar de la deuda?"))
-                while (isNaN(numPrompt) || numPrompt < 0 || numPrompt > saldo || numPrompt > deuda){
-                    alert("Valor invalido")
-                    numPrompt = Number(prompt("Cuanto queres pagar de la deuda?"))
-                }
-                saldo -= numPrompt
-                deuda -= numPrompt
-                break;
-            case 0:
-                alert(`Adios hermac`)
-                bandera = false;
-        }
+while (notasIngresadas) {
+    menu = Number(prompt(menuText))
+    menu = comprobarNum(menu, 1, 7, menuText)
+    switch (menu) {
+        case 1:
+            if (notas == 0) {
+                alert("Aún no hay notas ingresadas")
+            }else {
+                alert(`Las notas son:\n  -  ${notas.join("\n  -  ")}`)
+            }
+            break
+        case 2:
+            agregarNotas()
+            actualizarListas()
+            break
+        case 3:
+            console.log(`Notas aprobadas ${notasAprobadas}`)
+            mostrarLista("aprobadas", notasAprobadas)
+            break
+        case 4:
+            console.log(`Notas sobresalientes ${notasSobresalientes}`)
+            mostrarLista("sobresalientes", notasSobresalientes)
+            break
+        case 5:
+            console.log(`Notas desaprobadas ${notasDesaprobadas}`)
+            mostrarLista("desaprobadas", notasDesaprobadas)
+            break
+        case 6:
+            console.log(`Promedio ${calcularPromedio(notas)}`)
+            if (notas == 0) {
+                alert("No hay notas para promediar")
+            }else {
+                alert(`El promedio de notas es de ${calcularPromedio(notas)}`)
+            }
+            break
+        case 7:
+            alert("Chau")
+            notasIngresadas=false
     }
 }
