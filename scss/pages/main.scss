@@ -1,0 +1,45 @@
+main {
+    @include row;
+    height: 97dvh;
+    background-color: $celeste-claro;
+    section {
+        height: 100%;
+        width: 100%;
+        padding: 25px;
+        border-top: $borde;
+        @include row;
+        justify-content: space-around;
+        align-items: start;
+        .alumno-card {
+            @include column;
+            justify-content: space-between;
+            width: 200px;
+            height: 300px;
+            background-color: $celeste;
+            padding: 20px;
+            border: $borde;
+            .alumno-img {
+                height: 50%;
+                border: $borde;
+            }
+            .alumno-nombre {
+                text-align: center;
+                font-size: 1.4em;
+            }
+            .alumno-boton {
+                all: unset;
+                background-color: $azul;
+                padding: 10px;
+                border: 4px solid #000;
+                font-weight: bold;
+                font-size: 1.1em;
+                transition-property: background-color;
+                transition-duration: .3s;
+            }
+            .alumno-boton:hover {
+                background-color: $azul-claro;
+            }
+        }
+    }
+}
+

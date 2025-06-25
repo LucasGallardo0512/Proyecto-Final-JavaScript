@@ -1,0 +1,36 @@
+
+
+.side-menu {
+    background-color: $azul-oscuro;
+    height: 97dvh;
+    width: 15vw;
+    padding: 15px;
+    border-top: $borde;
+    border-right: $borde;
+    border-bottom: $borde;
+    ul {
+        width: 100%;
+        list-style: none;
+        @include column;
+        gap: 15px;
+        li {
+            width: 100%;
+            @include row;
+            justify-content: center;
+            button {
+                all: unset;
+                background-color: $azul;
+                width: 100%;
+                padding: 10px 0;
+                border: $borde;
+                text-align: center;
+                font-weight: bold;
+                transition-property: background-color;
+                transition-duration: .3s;
+            }
+            button:hover {
+                background-color: $azul-claro;
+            }
+        }
+    }
+}

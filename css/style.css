@@ -1,0 +1,112 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Courier New", Courier, monospace;
+}
+
+header {
+  height: 7vh;
+  background-color: #0F084B;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+header .logo-container {
+  display: flex;
+  align-items: center;
+}
+header .logo-container .logo {
+  width: 45px;
+  margin-right: 10px;
+}
+
+.side-menu {
+  background-color: #1B246B;
+  height: 97dvh;
+  width: 15vw;
+  padding: 15px;
+  border-top: 5px solid #000;
+  border-right: 5px solid #000;
+  border-bottom: 5px solid #000;
+}
+.side-menu ul {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 15px;
+}
+.side-menu ul li {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.side-menu ul li button {
+  all: unset;
+  background-color: #26408B;
+  width: 100%;
+  padding: 10px 0;
+  border: 5px solid #000;
+  text-align: center;
+  font-weight: bold;
+  transition-property: background-color;
+  transition-duration: 0.3s;
+}
+.side-menu ul li button:hover {
+  background-color: #6688B0;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  height: 97dvh;
+  background-color: #C2E7D9;
+}
+main section {
+  height: 100%;
+  width: 100%;
+  padding: 25px;
+  border-top: 5px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  align-items: start;
+}
+main section .alumno-card {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+  height: 300px;
+  background-color: #A6CFD5;
+  padding: 20px;
+  border: 5px solid #000;
+}
+main section .alumno-card .alumno-img {
+  height: 50%;
+  border: 5px solid #000;
+}
+main section .alumno-card .alumno-nombre {
+  text-align: center;
+  font-size: 1.4em;
+}
+main section .alumno-card .alumno-boton {
+  all: unset;
+  background-color: #26408B;
+  padding: 10px;
+  border: 4px solid #000;
+  font-weight: bold;
+  font-size: 1.1em;
+  transition-property: background-color;
+  transition-duration: 0.3s;
+}
+main section .alumno-card .alumno-boton:hover {
+  background-color: #6688B0;
+}
+
+/*# sourceMappingURL=style.css.map */

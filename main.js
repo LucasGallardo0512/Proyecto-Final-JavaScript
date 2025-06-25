@@ -89,10 +89,10 @@ while (notasIngresadas) {
             mostrarLista("desaprobadas", notasDesaprobadas)
             break
         case 6:
-            console.log(`Promedio ${calcularPromedio(notas)}`)
-            if (notas == 0) {
+            if (notas.length == 0) {
                 alert("No hay notas para promediar")
             }else {
+                console.log(`Promedio ${calcularPromedio(notas)}`)
                 alert(`El promedio de notas es de ${calcularPromedio(notas)}`)
             }
             break

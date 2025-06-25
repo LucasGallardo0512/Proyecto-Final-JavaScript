@@ -1,0 +1,15 @@
+header {
+    height: 7vh;
+    background-color: $azul-muyoscuro;
+    @include row;
+    justify-content: space-between;
+    padding: 0 10px;
+    .logo-container {
+        @include row;
+        .logo {
+            width: 45px;
+            margin-right: 10px;
+        }
+    }
+    
+}
