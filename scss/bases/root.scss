@@ -4,3 +4,20 @@
     box-sizing: border-box;
     font-family: 'Courier New', Courier, monospace;
 }
+
+.mensaje {
+    @include row;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.centrado {
+    position: absolute;
+    top: 50%;
+}
+.fondo {
+    height: 100%;
+    background-color: $azul-claro;
+    border: $borde;
+}

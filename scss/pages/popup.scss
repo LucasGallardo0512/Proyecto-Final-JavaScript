@@ -1,0 +1,205 @@
+
+.pop-up {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 500px;
+    width: 700px;
+    padding: 25px;
+    background-color: $azul-oscuro;
+    border: $borde;
+    .titulo {
+        width: 100%;
+        text-align: center;
+        font-size: 2em;
+        background-color: $azul-claro;
+        border: $borde;
+        padding: 5px;
+    }
+}
+
+.info {
+    padding: 5px 20px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3em;
+    background-color: $azul-claro;
+    border: $borde;
+}
+
+// Menu de creacion de alumnos
+
+.agregar-alumno-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .inputs {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+        .columna {
+            @include column;
+            align-items: start;
+            justify-content: center;
+            gap: 10px;
+            height: 100%;
+            .input-contenedor {
+                display: flex;
+                flex-direction: column;
+                width: 300px;
+                height: 78px;
+                align-items: start;
+                padding: 5px;
+                border: $borde;
+                background-color: $azul-claro;
+                font-size: 1.3em;
+                label {
+                    margin-left: 2px;
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                }
+                input {
+                    padding: 5px;
+                    width: 100%;
+                    font-weight: bold;
+                    background-color: $celeste;
+                    border: 2px solid #000;
+                    transition: background-color .3s;
+                    user-select: none;
+                }
+                input:hover {
+                    background-color: $celeste-claro;
+                }
+                select {
+                    padding: 5px;
+                    width: 100%;
+                    background-color: $celeste;
+                    font-weight: bold;
+                    border: 2px solid #000;
+                    transition: background-color .3s;
+                    user-select: none;
+                }
+                select:hover {
+                    background-color: $celeste-claro;
+                }   
+            }
+        }   
+    }
+    .submit {
+        padding: 5px;
+        font-size: 1.4em;
+        background-color: $azul-claro;
+        font-weight: bold;
+        border: $borde;
+        transition: background-color .3s;
+        user-select: none;
+    }
+    .submit:hover {
+        background-color: $celeste;
+    }
+    .boton-salir {
+        width: 30px;
+        border: $borde;
+        background-color: $azul-claro;
+        position: absolute;
+        right: -4px;
+        top: -4px;
+        text-align: center;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: background-color .3s;
+        user-select: none;
+    }
+    .boton-salir:hover {
+        background-color: $celeste;
+    }
+}
+
+// Eliminar alumno menu
+
+.eliminar-alumno-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5px;
+    font-weight: bold;
+    .alumnos-eliminar-contenedor {
+        display: flex;
+        flex-direction: column;
+        background-color: $azul;
+        border: $borde;
+        height: 100%;
+        padding: 5px;
+        gap: 5px;
+        overflow-y: scroll;
+        .alumno-item {
+            @include row;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border: $borde;
+            background-color: $azul-claro;
+            font-size: 1.1em;
+            .boton-eliminar {
+                all: unset;
+                background-color: $celeste;
+                font-size: 1em;
+                padding: 3px 10px;
+                border: 3px solid #000;
+                transition: background-color .3s;
+                user-select: none;
+            }
+            .boton-eliminar:hover {
+            background-color: $celeste-claro;
+            }
+        }
+    }
+    .boton-salir {
+        border: $borde;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        background-color: $azul-claro;
+        transition: background-color .3s;
+        user-select: none;
+    }
+    .boton-salir:hover {
+        background-color: $celeste;
+    }
+}
+
+// Info del alumno
+
+.alumno-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .encabezado {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        gap: 5px;
+        .info {
+            width: 200px;
+            padding: 5px 0px;
+            }
+    }
+    .info-contenedor {
+        @include column;
+        gap: 15px;
+    }
+    .boton-salir {
+        border: $borde;
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        background-color: $azul-claro;
+        transition: background-color .3s;
+        user-select: none;
+    }
+    .boton-salir:hover {
+        background-color: $celeste;
+    }
+}
