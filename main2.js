@@ -1,5 +1,6 @@
 
 const listaAlumnos = JSON.parse(localStorage.getItem('lista_alumnos')) || []
+const alumnosContenedor = document.getElementById("alumnos-contenedor")
 
 class alumno {
     constructor(nombre, apellido, curso, notaMate, notaLengua, notaIngles) {
@@ -9,12 +10,15 @@ class alumno {
         this.notaMate = notaMate;
         this.notaLengua = notaLengua;
         this.notaIngles = notaIngles;
+        this.promedio = Number((notaMate + notaLengua + notaIngles)/3).toFixed(2)
     }
 }
 
 creadoraDeCards()
 
 function agregarAlumno() {
+    document.querySelectorAll(".pop-up").forEach(popup => popup.remove())
+
     const ventanaEmergente = document.createElement("form")
     ventanaEmergente.className = "agregar-alumno-menu pop-up"
     ventanaEmergente.id = "agregar-alumno-menu"
@@ -80,7 +84,8 @@ function agregarAlumno() {
 
         const nuevoAlumno = new alumno(nombre, apellido, curso, notaMate, notaLengua, notaIngles)
         listaAlumnos.push(nuevoAlumno)
-        
+        localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
+
         console.log(listaAlumnos)
         salir("agregar-alumno-menu")
         creadoraDeCards()
@@ -95,37 +100,37 @@ function salir(ventanaID) {
 }
 
 function crearOpcionesNota() {
-    let opciones = ""
+    let opcion = ""
     for (let i = 1; i <= 10; i++) {
-        opciones += `<option value="${i}">${i}</option>`
+        opcion += `<option value="${i}">${i}</option>`
     }
-    return opciones
+    return opcion
 }
 
 function creadoraDeCards() {
-    const alumnosContenedor = document.getElementById("alumnos-contenedor")
     if (listaAlumnos.length == 0) {
         alumnosContenedor.innerHTML = `<div class="mensaje centrado">No hay alumnos registrados aún</div>`
-}else {
-    alumnosContenedor.innerHTML = ``
-}
+    }else {
+        alumnosContenedor.innerHTML = ``
+    }
 
     listaAlumnos.forEach((alumno) => {
         const card = document.createElement("article")
-        card.className = "alumno-card";
+        card.className = "alumno-card"
         card.innerHTML = `
             <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
             <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
             <h3>Curso: ${alumno.curso}</h3>
             <button class="alumno-boton">Más info</button>
-        `;
+        `
         card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
-        alumnosContenedor.appendChild(card);
+        alumnosContenedor.appendChild(card)
 	})
-    localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
 }
 
 function mostrarInfo(alumno) {
+    document.querySelectorAll(".pop-up").forEach(ele => ele.remove())
+
     const ventanaEmergente = document.createElement("article")
     ventanaEmergente.className = "alumno-info pop-up"
     ventanaEmergente.id = "alumno-info"
@@ -146,6 +151,9 @@ function mostrarInfo(alumno) {
         <div class="info">
             Nota de Inglés: ${alumno.notaIngles}
         </div>
+        <div class="info">
+            Promedio: ${alumno.promedio}
+        </div>
     </div>
     <button class="boton-salir" id="boton-salir">Cerrar</button>
     `
@@ -154,6 +162,7 @@ function mostrarInfo(alumno) {
 }
 
 function eliminarAlumno() {
+    document.querySelectorAll(".pop-up").forEach(popup => popup.remove())
 
     const ventanaEmergente = document.createElement("div")
     ventanaEmergente.className = "eliminar-alumno-menu pop-up"
@@ -200,3 +209,133 @@ function nombresDeAlumnos() {
 
 const eliminarAlumnoBoton = document.getElementById("eliminar-alumno")
 eliminarAlumnoBoton.addEventListener("click", () => eliminarAlumno())
+
+function abrirMenuFiltro() {
+    const menuAbierto = document.querySelector(".filtro-desplegable")
+    if (menuAbierto) {
+        menuAbierto.remove()
+        return
+    }
+
+    const menuFiltro = document.createElement("ul")
+    menuFiltro.className = "filtro-desplegable"
+    menuFiltro.innerHTML = `
+        <li id="cursos-contenedor"><button class="opcion-filtro" id="abrir-cursos">Por Curso</button></li>
+        <li><button class="opcion-filtro" id="promedio-aprobado">Por promedio aprobado</button></li>
+        <li><button class="opcion-filtro" id="promedio-desaprobado">Por promedio desaprobado</button></li>
+        <li><button class="opcion-filtro" id="borrar-filtros">Borrar filtros</button></li>
+    `
+    
+    const contenedorMenu = document.getElementById("filtro-contenedor")
+    contenedorMenu.append(menuFiltro)
+
+    const botonAbrirCursos = document.getElementById("abrir-cursos")
+    botonAbrirCursos.addEventListener("click", () => menuCursos())
+    const botonFiltrarPromAprob = document.getElementById("promedio-aprobado")
+    botonFiltrarPromAprob.addEventListener("click", () => filtrarListaProm(prom => prom >= 7))
+    const botonFiltrarPromDesaprob = document.getElementById("promedio-desaprobado")
+    botonFiltrarPromDesaprob.addEventListener("click", () => filtrarListaProm(prom => prom <= 6))
+    const botonBorrarFiltros = document.getElementById("borrar-filtros")
+    botonBorrarFiltros.addEventListener("click", () => creadoraDeCards())
+}
+
+const botonFiltroMenu = document.getElementById("filtro-abrir-desplegable")
+botonFiltroMenu.addEventListener("click", () => abrirMenuFiltro())
+
+function menuCursos() {
+    const menuAbierto = document.querySelector(".cursos-desplegable")
+    if (menuAbierto) {
+        menuAbierto.remove()
+        return
+    }
+
+    const menuCursos = document.createElement("ul")
+    menuCursos.className = "cursos-desplegable"
+    menuCursos.innerHTML = `
+        <li><button class="opcion-filtro curso" id="primero">1°</button></li>
+        <li><button class="opcion-filtro curso" id="segundo">2°</button></li>
+        <li><button class="opcion-filtro curso" id="tercero">3°</button></li>
+        <li><button class="opcion-filtro curso" id="cuarto">4°</button></li>
+        <li><button class="opcion-filtro curso" id="quinto">5°</button></li>
+        <li><button class="opcion-filtro curso" id="sexto">6°</button></li>
+    `
+    const menuContenedor = document.getElementById("cursos-contenedor")
+    menuContenedor.append(menuCursos)
+
+    const botones = [
+        { id: "primero", curso: "1°" },
+        { id: "segundo", curso: "2°" },
+        { id: "tercero", curso: "3°" },
+        { id: "cuarto", curso: "4°" },
+        { id: "quinto", curso: "5°" },
+        { id: "sexto", curso: "6°" }
+    ]
+
+    botones.forEach(({ id, curso }) => {    
+        document.getElementById(id).addEventListener("click", () => {
+            filtrarPorCurso(c => c === curso)
+        })
+    })
+}
+
+function filtrarPorCurso(curso) {
+    const listaFiltrada = []
+
+    listaAlumnos.forEach((ele) => {
+        if (curso(ele.curso)) {
+            listaFiltrada.push(ele)
+        }
+    })
+
+    console.log(listaFiltrada)
+
+    if (listaFiltrada.length == 0) {
+        alumnosContenedor.innerHTML = `<div class="mensaje centrado">No hay alumnos de este curso aún</div>`
+        return
+    }else {
+        alumnosContenedor.innerHTML = ``
+    }
+
+    listaFiltrada.forEach((alumno) => {
+        const card = document.createElement("article")
+        card.className = "alumno-card"
+        card.innerHTML = `
+            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
+            <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
+            <h3>Curso: ${alumno.curso}</h3>
+            <button class="alumno-boton">Más info</button>
+        `
+        card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
+        alumnosContenedor.appendChild(card)
+    })
+}
+
+function filtrarListaProm(criterio) {
+    const listaFiltrada = []
+
+    listaAlumnos.forEach((ele) => {
+        if (criterio(ele.promedio)) {
+            listaFiltrada.push(ele)
+        }
+    })
+
+    if (listaFiltrada.length == 0) {
+        alumnosContenedor.innerHTML = `<div class="mensaje centrado">No hay alumnos con que cumplan aún</div>`
+        return
+    }else {
+        alumnosContenedor.innerHTML = ``
+    }
+
+    listaFiltrada.forEach((alumno) => {
+        const card = document.createElement("article")
+        card.className = "alumno-card"
+        card.innerHTML = `
+            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
+            <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
+            <h3>Promedio: ${alumno.promedio}</h3>
+            <button class="alumno-boton">Más info</button>
+        `
+        card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
+        alumnosContenedor.appendChild(card)
+    })
+}

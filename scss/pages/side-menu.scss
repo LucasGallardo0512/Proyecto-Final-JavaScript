@@ -1,12 +1,26 @@
 
+.boton-menu {
+    all: unset;
+    background-color: $azul;
+    width: 100%;
+    padding: 10px 0;
+    border: $borde;
+    text-align: center;
+    font-weight: bold;
+    transition: background-color .3s;
+}
+.boton-menu:hover {
+    background-color: $azul-claro;
+}
 
 .side-menu {
     background-color: $azul-oscuro;
     min-height: 93dvh;
     width: 15vw;
     border-right: $borde;
+    border-left: $borde;
     border-bottom: $borde;
-    ul {
+    .lista-funciones {
         border-top: $borde;
         position: sticky;
         padding: 15px;
@@ -17,21 +31,42 @@
         gap: 15px;
         li {
             width: 100%;
-            @include row;
-            justify-content: center;
-            button {
-                all: unset;
-                background-color: $azul;
-                width: 100%;
-                padding: 10px 0;
-                border: $borde;
-                text-align: center;
-                font-weight: bold;
-                transition: background-color .3s;
+            @include column;
+        }
+        .filtro-menu {
+            .filtro-desplegable {
+                width: 95%;
+                li {
+                    width: 100%;
+                    @include column;
+                    .opcion-filtro {
+                        all: unset;
+                        background-color: $azul-claro;
+                        width: 100%;
+                        padding: 5px 0;
+                        border-right: 3px solid #000;
+                        border-left: 3px solid #000;
+                        border-bottom: 3px solid #000;
+                        text-align: center;
+                        font-weight: bold;
+                        transition: background-color .3s;
+                    }
+                    .opcion-filtro:hover {
+                        background-color: $celeste;
+                    }
+                }
             }
-            button:hover {
-                background-color: $azul-claro;
+        #cursos-contenedor {
+            position: relative;
+            .cursos-desplegable {
+                position: absolute;
+                top: -3px;
+                left: 101%;
             }
+            .curso {
+                border-top: 3px solid #000;
+            }
+        }
         }
     }
 }

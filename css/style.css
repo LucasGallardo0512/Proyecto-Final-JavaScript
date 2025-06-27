@@ -42,14 +42,30 @@ header .logo-container .logo {
   margin-right: 10px;
 }
 
+.boton-menu {
+  all: unset;
+  background-color: #26408B;
+  width: 100%;
+  padding: 10px 0;
+  border: 5px solid #000;
+  text-align: center;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.boton-menu:hover {
+  background-color: #6688B0;
+}
+
 .side-menu {
   background-color: #1B246B;
   min-height: 93dvh;
   width: 15vw;
   border-right: 5px solid #000;
+  border-left: 5px solid #000;
   border-bottom: 5px solid #000;
 }
-.side-menu ul {
+.side-menu .lista-funciones {
   border-top: 5px solid #000;
   position: sticky;
   padding: 15px;
@@ -61,24 +77,46 @@ header .logo-container .logo {
   align-items: center;
   gap: 15px;
 }
-.side-menu ul li {
+.side-menu .lista-funciones li {
   width: 100%;
   display: flex;
+  flex-flow: column;
   align-items: center;
-  justify-content: center;
 }
-.side-menu ul li button {
-  all: unset;
-  background-color: #26408B;
+.side-menu .lista-funciones .filtro-menu .filtro-desplegable {
+  width: 95%;
+}
+.side-menu .lista-funciones .filtro-menu .filtro-desplegable li {
   width: 100%;
-  padding: 10px 0;
-  border: 5px solid #000;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.side-menu .lista-funciones .filtro-menu .filtro-desplegable li .opcion-filtro {
+  all: unset;
+  background-color: #6688B0;
+  width: 100%;
+  padding: 5px 0;
+  border-right: 3px solid #000;
+  border-left: 3px solid #000;
+  border-bottom: 3px solid #000;
   text-align: center;
   font-weight: bold;
   transition: background-color 0.3s;
 }
-.side-menu ul li button:hover {
-  background-color: #6688B0;
+.side-menu .lista-funciones .filtro-menu .filtro-desplegable li .opcion-filtro:hover {
+  background-color: #A6CFD5;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-contenedor {
+  position: relative;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-contenedor .cursos-desplegable {
+  position: absolute;
+  top: -3px;
+  left: 101%;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-contenedor .curso {
+  border-top: 3px solid #000;
 }
 
 main {
@@ -98,7 +136,7 @@ main #alumnos-contenedor {
   justify-content: center;
   align-items: start;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 15px;
 }
 main #alumnos-contenedor .alumno-card {
   display: flex;
@@ -289,9 +327,10 @@ main #alumnos-contenedor .alumno-card .alumno-boton:hover {
   background-color: #C2E7D9;
 }
 .eliminar-alumno-menu .boton-salir {
+  padding: 5px;
   border: 5px solid #000;
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.4em;
   font-weight: bold;
   background-color: #6688B0;
   transition: background-color 0.3s;
@@ -326,7 +365,8 @@ main #alumnos-contenedor .alumno-card .alumno-boton:hover {
 .alumno-info .boton-salir {
   border: 5px solid #000;
   text-align: center;
-  font-size: 1.5em;
+  padding: 5px;
+  font-size: 1.4em;
   font-weight: bold;
   background-color: #6688B0;
   transition: background-color 0.3s;

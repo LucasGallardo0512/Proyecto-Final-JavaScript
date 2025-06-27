@@ -156,9 +156,10 @@
         }
     }
     .boton-salir {
+        padding: 5px;
         border: $borde;
         text-align: center;
-        font-size: 1.5em;
+        font-size: 1.4em;
         font-weight: bold;
         background-color: $azul-claro;
         transition: background-color .3s;
@@ -193,7 +194,8 @@
     .boton-salir {
         border: $borde;
         text-align: center;
-        font-size: 1.5em;
+        padding: 5px;
+        font-size: 1.4em;
         font-weight: bold;
         background-color: $azul-claro;
         transition: background-color .3s;
