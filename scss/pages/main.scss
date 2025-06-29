@@ -30,6 +30,9 @@ main {
                 text-align: center;
                 font-size: 1.4em;
             }
+            h3 {
+                text-align: center;
+            }
             .alumno-boton {
                 all: unset;
                 background-color: $azul;
@@ -42,6 +45,11 @@ main {
             .alumno-boton:hover {
                 background-color: $azul-claro;
             }
+        }
+        .mensaje-centrado {
+            font-weight: bold;
+            top: 50%;
+            position: relative;
         }
     }
 }

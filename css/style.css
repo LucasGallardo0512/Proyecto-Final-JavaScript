@@ -57,6 +57,31 @@ header .logo-container .logo {
   background-color: #6688B0;
 }
 
+.desplegable {
+  width: 95%;
+}
+.desplegable li {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.desplegable li .opcion {
+  all: unset;
+  background-color: #6688B0;
+  width: 100%;
+  padding: 5px 0;
+  border-right: 3px solid #000;
+  border-left: 3px solid #000;
+  border-bottom: 3px solid #000;
+  text-align: center;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+.desplegable li .opcion:hover {
+  background-color: #A6CFD5;
+}
+
 .side-menu {
   background-color: #1B246B;
   min-height: 93dvh;
@@ -83,39 +108,41 @@ header .logo-container .logo {
   flex-flow: column;
   align-items: center;
 }
-.side-menu .lista-funciones .filtro-menu .filtro-desplegable {
-  width: 95%;
-}
-.side-menu .lista-funciones .filtro-menu .filtro-desplegable li {
-  width: 100%;
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-}
-.side-menu .lista-funciones .filtro-menu .filtro-desplegable li .opcion-filtro {
-  all: unset;
-  background-color: #6688B0;
-  width: 100%;
-  padding: 5px 0;
-  border-right: 3px solid #000;
-  border-left: 3px solid #000;
-  border-bottom: 3px solid #000;
-  text-align: center;
-  font-weight: bold;
-  transition: background-color 0.3s;
-}
-.side-menu .lista-funciones .filtro-menu .filtro-desplegable li .opcion-filtro:hover {
-  background-color: #A6CFD5;
-}
-.side-menu .lista-funciones .filtro-menu #cursos-contenedor {
+.side-menu .lista-funciones .filtro-menu #cursos-opcion {
   position: relative;
 }
-.side-menu .lista-funciones .filtro-menu #cursos-contenedor .cursos-desplegable {
+.side-menu .lista-funciones .filtro-menu #cursos-opcion #cursos-contenedor {
   position: absolute;
   top: -3px;
-  left: 101%;
+  left: 100%;
+  width: auto;
 }
-.side-menu .lista-funciones .filtro-menu #cursos-contenedor .curso {
+.side-menu .lista-funciones .filtro-menu #cursos-opcion #cursos-contenedor .bloque-curso {
+  position: relative;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-opcion #cursos-contenedor .bloque-curso .curso-y-prom-desplegable {
+  position: absolute;
+  top: -3px;
+  left: 121%;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-opcion #cursos-contenedor #bloque-primero .curso-y-prom-desplegable {
+  top: 0;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-opcion #cursos-contenedor #primero {
+  border-top: 3px solid #000;
+}
+.side-menu .lista-funciones .filtro-menu #cursos-opcion #cursos-contenedor #curso-aprobados {
+  border-top: 3px solid #000;
+}
+.side-menu .lista-funciones #ordenar-contenedor #ordenar-desplegable .opciones-orden {
+  position: relative;
+}
+.side-menu .lista-funciones #ordenar-contenedor #ordenar-desplegable .opciones-orden #orden-opciones-desplegable {
+  position: absolute;
+  top: -3px;
+  left: 102%;
+}
+.side-menu .lista-funciones #ordenar-contenedor #ordenar-desplegable .opciones-orden #orden-opciones-desplegable li:first-child button {
   border-top: 3px solid #000;
 }
 
@@ -157,6 +184,9 @@ main #alumnos-contenedor .alumno-card .alumno-nombre {
   text-align: center;
   font-size: 1.4em;
 }
+main #alumnos-contenedor .alumno-card h3 {
+  text-align: center;
+}
 main #alumnos-contenedor .alumno-card .alumno-boton {
   all: unset;
   background-color: #26408B;
@@ -168,6 +198,11 @@ main #alumnos-contenedor .alumno-card .alumno-boton {
 }
 main #alumnos-contenedor .alumno-card .alumno-boton:hover {
   background-color: #6688B0;
+}
+main #alumnos-contenedor .mensaje-centrado {
+  font-weight: bold;
+  top: 50%;
+  position: relative;
 }
 
 .pop-up {
@@ -188,6 +223,42 @@ main #alumnos-contenedor .alumno-card .alumno-boton:hover {
   background-color: #6688B0;
   border: 5px solid #000;
   padding: 5px;
+}
+
+#alerta {
+  height: 350px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0F084B;
+}
+#alerta .titulo {
+  background-color: #26408B;
+}
+#alerta .info {
+  width: 300px;
+  padding: 15px 5px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.2em;
+  background-color: #6688B0;
+  border: 5px solid #000;
+}
+#alerta .boton-salir {
+  width: 100%;
+  padding: 5px;
+  border: 5px solid #000;
+  text-align: center;
+  font-size: 1.4em;
+  font-weight: bold;
+  background-color: #6688B0;
+  transition: background-color 0.3s;
+  user-select: none;
+}
+#alerta .boton-salir:hover {
+  background-color: #A6CFD5;
 }
 
 .info {

@@ -1,6 +1,7 @@
 
 const listaAlumnos = JSON.parse(localStorage.getItem('lista_alumnos')) || []
 const alumnosContenedor = document.getElementById("alumnos-contenedor")
+let listaRenderizada = []
 
 class alumno {
     constructor(nombre, apellido, curso, notaMate, notaLengua, notaIngles) {
@@ -14,7 +15,32 @@ class alumno {
     }
 }
 
-creadoraDeCards()
+function renderizarCards(lista, mensajeVacio, mensajeCallback = () => "") {
+    listaRenderizada = []
+
+    if (lista.length == 0) {
+            alumnosContenedor.innerHTML = `
+                <div class="mensaje-centrado">${mensajeVacio}</div>`
+        }else {
+            alumnosContenedor.innerHTML = ``
+        }
+
+    lista.forEach((alumno) => {
+        const card = document.createElement("article")
+        card.className = "alumno-card"
+        card.innerHTML = `
+            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
+            <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
+            <h3>${mensajeCallback(alumno)}</h3>
+            <button class="alumno-boton">Más info</button>
+        `
+        card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
+        alumnosContenedor.appendChild(card)
+        listaRenderizada.push(alumno)
+    })
+}
+
+renderizarCards(listaAlumnos, "No hay alumnos registrados aún", alumno => `Curso: ${alumno.curso}`)
 
 function agregarAlumno() {
     document.querySelectorAll(".pop-up").forEach(popup => popup.remove())
@@ -28,11 +54,11 @@ function agregarAlumno() {
             <div class="columna">
                 <div class="input-contenedor">
                     <label for="alumno-nombre">Nombre:</label>
-                    <input type="text" name="nombre" id="alumno-nombre" required>
+                    <input type="text" name="nombre" id="alumno-nombre">
                 </div>
                 <div class="input-contenedor">
                     <label for="alumno-apellido">Apellido:</label>
-                    <input type="text" name="apellido" id="alumno-apellido" required>
+                    <input type="text" name="apellido" id="alumno-apellido">
                 </div>
                 <div class="input-contenedor">
                     <label for="alumno-curso">Curso:</label>
@@ -71,7 +97,9 @@ function agregarAlumno() {
         <button class="boton-salir" id="boton-salir">X</button>
         `
     document.body.append(ventanaEmergente)
-    ventanaEmergente.querySelector("#boton-salir").addEventListener("click", () => salir("agregar-alumno-menu"))
+    ventanaEmergente.querySelector("#boton-salir").addEventListener("click", () => {
+        salir("agregar-alumno-menu"), salir("alerta")
+    })
 
     ventanaEmergente.addEventListener("submit", (ele) => {
         ele.preventDefault()
@@ -82,17 +110,50 @@ function agregarAlumno() {
         const notaLengua = Number(document.getElementById("alumno-nota-lengua").value)
         const notaIngles = Number(document.getElementById("alumno-nota-ingles").value)
 
+        if (!nombre || !apellido) {
+            alerta("Por favor, completa todos los campos.")
+            return
+        }
+
+        const duplicado = listaAlumnos.some(a => a.nombre === nombre && a.apellido === apellido)
+        if (duplicado) {
+            alerta("Ya hay un alumno registrado con ese nombre y apellido.")
+            return
+        }
+
+        const contieneNumero = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/
+        if (!contieneNumero.test(nombre) || !contieneNumero.test(apellido)) {
+            alerta("El nombre y el apellido no deben contener números.")
+            return
+        }
+
         const nuevoAlumno = new alumno(nombre, apellido, curso, notaMate, notaLengua, notaIngles)
+        
         listaAlumnos.push(nuevoAlumno)
         localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
 
         console.log(listaAlumnos)
         salir("agregar-alumno-menu")
-        creadoraDeCards()
+        renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
     })
 }
+
 const agregarAlumnoBoton = document.getElementById("agregar-alumno")
 agregarAlumnoBoton.addEventListener("click", agregarAlumno)
+
+function alerta(mensaje) {
+    const ventanaEmergente = document.createElement("article")
+    ventanaEmergente.className = "pop-up"
+    ventanaEmergente.id = "alerta"
+    ventanaEmergente.innerHTML = `
+    <h2 class="titulo">Alerta</h2>
+    <p class="info">${mensaje}</p>
+    <button class="boton-salir" id="boton-alerta-salir">Cerrar</button>
+    `
+
+    document.body.append(ventanaEmergente)
+    document.getElementById("boton-alerta-salir").addEventListener("click", () => salir("alerta"))
+}
 
 function salir(ventanaID) {
     const ventanaEmergente = document.getElementById(ventanaID)
@@ -107,26 +168,7 @@ function crearOpcionesNota() {
     return opcion
 }
 
-function creadoraDeCards() {
-    if (listaAlumnos.length == 0) {
-        alumnosContenedor.innerHTML = `<div class="mensaje centrado">No hay alumnos registrados aún</div>`
-    }else {
-        alumnosContenedor.innerHTML = ``
-    }
 
-    listaAlumnos.forEach((alumno) => {
-        const card = document.createElement("article")
-        card.className = "alumno-card"
-        card.innerHTML = `
-            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
-            <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
-            <h3>Curso: ${alumno.curso}</h3>
-            <button class="alumno-boton">Más info</button>
-        `
-        card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
-        alumnosContenedor.appendChild(card)
-	})
-}
 
 function mostrarInfo(alumno) {
     document.querySelectorAll(".pop-up").forEach(ele => ele.remove())
@@ -193,7 +235,7 @@ function eliminarAlumno() {
                 const i = boton.closest(".alumno-item").dataset.index
                 listaAlumnos.splice(i, 1)
                 localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
-                creadoraDeCards()
+                renderizarCards(listaAlumnos, "No hay registrados aún.", alumno => `Curso: ${alumno.curso}`)
                 renderizarLista()
             })
         })
@@ -211,19 +253,20 @@ const eliminarAlumnoBoton = document.getElementById("eliminar-alumno")
 eliminarAlumnoBoton.addEventListener("click", () => eliminarAlumno())
 
 function abrirMenuFiltro() {
-    const menuAbierto = document.querySelector(".filtro-desplegable")
+    const menuAbierto = document.getElementById("filtro-desplegable")
     if (menuAbierto) {
         menuAbierto.remove()
         return
     }
 
     const menuFiltro = document.createElement("ul")
-    menuFiltro.className = "filtro-desplegable"
+    menuFiltro.className = "desplegable"
+    menuFiltro.id = "filtro-desplegable"
     menuFiltro.innerHTML = `
-        <li id="cursos-contenedor"><button class="opcion-filtro" id="abrir-cursos">Por Curso</button></li>
-        <li><button class="opcion-filtro" id="promedio-aprobado">Por promedio aprobado</button></li>
-        <li><button class="opcion-filtro" id="promedio-desaprobado">Por promedio desaprobado</button></li>
-        <li><button class="opcion-filtro" id="borrar-filtros">Borrar filtros</button></li>
+        <li id="cursos-opcion"><button class="opcion" id="abrir-cursos">Por Curso</button><div id="cursos-contenedor"></div></li>
+        <li><button class="opcion" id="promedio-aprobado">Aprobados por promedio</button></li>
+        <li><button class="opcion" id="promedio-desaprobado">Desaprobados por promedio</button></li>
+        <li><button class="opcion" id="borrar-filtros">Borrar filtros</button></li>
     `
     
     const contenedorMenu = document.getElementById("filtro-contenedor")
@@ -232,110 +275,165 @@ function abrirMenuFiltro() {
     const botonAbrirCursos = document.getElementById("abrir-cursos")
     botonAbrirCursos.addEventListener("click", () => menuCursos())
     const botonFiltrarPromAprob = document.getElementById("promedio-aprobado")
-    botonFiltrarPromAprob.addEventListener("click", () => filtrarListaProm(prom => prom >= 7))
+    botonFiltrarPromAprob.addEventListener("click", () => filtrarListaPromedio(prom => prom >= 7))
     const botonFiltrarPromDesaprob = document.getElementById("promedio-desaprobado")
-    botonFiltrarPromDesaprob.addEventListener("click", () => filtrarListaProm(prom => prom <= 6))
+    botonFiltrarPromDesaprob.addEventListener("click", () => filtrarListaPromedio(prom => prom <= 6))
     const botonBorrarFiltros = document.getElementById("borrar-filtros")
-    botonBorrarFiltros.addEventListener("click", () => creadoraDeCards())
+    botonBorrarFiltros.addEventListener("click", () => renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`))
 }
 
 const botonFiltroMenu = document.getElementById("filtro-abrir-desplegable")
 botonFiltroMenu.addEventListener("click", () => abrirMenuFiltro())
 
+const cursos = [
+    { id: "primero", curso: "1°" },
+    { id: "segundo", curso: "2°" },
+    { id: "tercero", curso: "3°" },
+    { id: "cuarto", curso: "4°" },
+    { id: "quinto", curso: "5°" },
+    { id: "sexto", curso: "6°" }
+]
+
 function menuCursos() {
-    const menuAbierto = document.querySelector(".cursos-desplegable")
+    const contenedor = document.getElementById("cursos-contenedor")
+
+    if (contenedor.innerHTML !== "") {
+        contenedor.innerHTML = ""
+        return
+    }
+
+    cursos.forEach(({ id, curso }) => {
+        const bloque = document.createElement("div")
+        bloque.className = "bloque-curso"
+        bloque.id = `bloque-${id}`
+
+        const btn = document.createElement("button")
+        btn.className = "opcion"
+        btn.id = id
+        btn.textContent = curso
+
+        btn.addEventListener("click", () => {
+            menuCursosYProm(id, curso)
+            })
+
+        bloque.append(btn)
+        contenedor.append(bloque)
+    })
+}
+
+function menuCursosYProm(id, curso) {
+    const contenedor = document.getElementById(`bloque-${id}`)
+
+    const menuAbierto = contenedor.querySelector(".curso-y-prom-desplegable")
     if (menuAbierto) {
         menuAbierto.remove()
         return
     }
-
-    const menuCursos = document.createElement("ul")
-    menuCursos.className = "cursos-desplegable"
-    menuCursos.innerHTML = `
-        <li><button class="opcion-filtro curso" id="primero">1°</button></li>
-        <li><button class="opcion-filtro curso" id="segundo">2°</button></li>
-        <li><button class="opcion-filtro curso" id="tercero">3°</button></li>
-        <li><button class="opcion-filtro curso" id="cuarto">4°</button></li>
-        <li><button class="opcion-filtro curso" id="quinto">5°</button></li>
-        <li><button class="opcion-filtro curso" id="sexto">6°</button></li>
-    `
-    const menuContenedor = document.getElementById("cursos-contenedor")
-    menuContenedor.append(menuCursos)
-
-    const botones = [
-        { id: "primero", curso: "1°" },
-        { id: "segundo", curso: "2°" },
-        { id: "tercero", curso: "3°" },
-        { id: "cuarto", curso: "4°" },
-        { id: "quinto", curso: "5°" },
-        { id: "sexto", curso: "6°" }
-    ]
-
-    botones.forEach(({ id, curso }) => {    
-        document.getElementById(id).addEventListener("click", () => {
-            filtrarPorCurso(c => c === curso)
+    document.querySelectorAll(".curso-y-prom-desplegable").forEach(menu => {
+        menu.remove()
         })
-    })
+    filtrarPorCurso(curso)
+
+    const submenu = document.createElement("ul")
+    submenu.className = "curso-y-prom-desplegable"
+    submenu.innerHTML = `
+        <li><button class="opcion" id="curso-aprobados">Aprobado</button></li>
+        <li><button class="opcion" id="curso-desaprobados">Desaprobado</button></li>
+        <li><button class="opcion" id="curso-todos">Todos</button></li>
+    `
+    contenedor.appendChild(submenu)
+
+    document.getElementById("curso-aprobados").addEventListener("click", () => filtrarPorCursoYProm(curso, "aprobado"))
+    document.getElementById("curso-desaprobados").addEventListener("click", () => filtrarPorCursoYProm(curso, "desaprobado"))
+    document.getElementById("curso-todos").addEventListener("click", () => filtrarPorCursoYProm(curso, "todos"))
 }
 
 function filtrarPorCurso(curso) {
-    const listaFiltrada = []
+    const listaFiltrada =  listaAlumnos.filter(alumno => alumno.curso === curso)
 
-    listaAlumnos.forEach((ele) => {
-        if (curso(ele.curso)) {
-            listaFiltrada.push(ele)
-        }
+    renderizarCards(listaFiltrada, "No hay alumnos registrados de este curso aún." , alumno => `Curso: ${alumno.curso}`)
+}
+
+function filtrarPorCursoYProm(curso, criterio) {
+    let listaFiltrada = listaAlumnos.filter(a => a.curso === curso)
+
+    if (criterio === "aprobado") listaFiltrada = listaFiltrada.filter(a => a.promedio >= 7)
+    if (criterio === "desaprobado") listaFiltrada = listaFiltrada.filter(a => a.promedio < 7)
+
+    renderizarCards(listaFiltrada, "No hay alumnos registrados de este curso que cumplan esta condición aún.", alumno => `Promedio: ${alumno.promedio}<br>Curso: ${alumno.curso}`)
+}
+
+function filtrarListaPromedio(criterio) {
+    const listaFiltrada = listaAlumnos.filter(alumno => criterio(alumno.promedio))
+
+    renderizarCards(listaFiltrada, "No hay alumnos registrados que cumplan esta condición aún.", alumno => `Promedio: ${alumno.promedio}`)
+}
+
+function abrirOrdenarAlumnosMenu() {
+    const menuAbierto = document.getElementById("ordenar-desplegable")
+    if (menuAbierto) {
+        menuAbierto.remove()
+        return
+    }
+    
+    const contenedor = document.getElementById("ordenar-contenedor")
+    const ordenarMenu = document.createElement("ul")
+    ordenarMenu.className = "desplegable"
+    ordenarMenu.id = "ordenar-desplegable"
+    ordenarMenu.innerHTML = `
+        <li id="ordenar-curso-contenedor" class="opciones-orden"><button class="opcion" id="por-curso">Por curso</button></li>
+        <li id="ordenar-prom-contenedor" class="opciones-orden"><button class="opcion" id="por-promedio">Por Promedio</button></li>
+        <li class="opciones-orden"><button class="opcion" id="sin-orden">Borrar orden</button></li>
+    `
+    contenedor.append(ordenarMenu)
+
+    document.getElementById("por-curso").addEventListener("click", () => 
+        menuOrdenarAlumnos("ordenar-curso-contenedor", (a, b) => parseInt(b.curso) - parseInt(a.curso), (a, b) => parseInt(a.curso) - parseInt(b.curso)))
+    document.getElementById("por-promedio").addEventListener("click", () => 
+        menuOrdenarAlumnos("ordenar-prom-contenedor", (a, b) => b.promedio - a.promedio, (a, b) => a.promedio - b.promedio))
+    document.getElementById("sin-orden").addEventListener("click", () => {
+        renderizarCards(listaAlumnos, "No hay alumnos registrados aún", alumno => `Curso: ${alumno.curso}`), (ele) => {
+            ele = document.querySelector("#orden-opciones-desplegable")
+                if (ele) {
+                    ele.remove()
+                }
+            }
+    })
+}   
+
+const botonOrdenarMenu = document.getElementById("ordenar-abrir-desplegable")
+botonOrdenarMenu.addEventListener("click", () => abrirOrdenarAlumnosMenu())
+
+function menuOrdenarAlumnos(contenedor, criterio1, criterio2) {
+    const contenedorMenu = document.getElementById(contenedor)
+
+    const menuAbierto = contenedorMenu.querySelector("#orden-opciones-desplegable")
+    if (menuAbierto) {
+        menuAbierto.remove()
+        return
+    }
+    document.querySelectorAll("#orden-opciones-desplegable").forEach(menu => {
+        menu.remove()
     })
 
-    console.log(listaFiltrada)
+    const ordenarMenu = document.createElement("ul")
+    ordenarMenu.id = "orden-opciones-desplegable"
+    ordenarMenu.innerHTML = `
+        <li><button class="opcion" id="mayor-menor">Mayor a menor</button></li>
+        <li><button class="opcion" id="menor-mayor">Menor a mayor</button></li>
+    `
 
-    if (listaFiltrada.length == 0) {
-        alumnosContenedor.innerHTML = `<div class="mensaje centrado">No hay alumnos de este curso aún</div>`
-        return
-    }else {
-        alumnosContenedor.innerHTML = ``
-    }
+    contenedorMenu.append(ordenarMenu)
 
-    listaFiltrada.forEach((alumno) => {
-        const card = document.createElement("article")
-        card.className = "alumno-card"
-        card.innerHTML = `
-            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
-            <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
-            <h3>Curso: ${alumno.curso}</h3>
-            <button class="alumno-boton">Más info</button>
-        `
-        card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
-        alumnosContenedor.appendChild(card)
+    document.getElementById("mayor-menor").addEventListener("click", () => {
+        ordenarAlumnos(criterio1, alumno => `Promedio: ${alumno.promedio}<br>Curso: ${alumno.curso}`)
+    })
+    document.getElementById("menor-mayor").addEventListener("click", () => {
+        ordenarAlumnos(criterio2, alumno => `Promedio: ${alumno.promedio}<br>Curso: ${alumno.curso}`)
     })
 }
 
-function filtrarListaProm(criterio) {
-    const listaFiltrada = []
-
-    listaAlumnos.forEach((ele) => {
-        if (criterio(ele.promedio)) {
-            listaFiltrada.push(ele)
-        }
-    })
-
-    if (listaFiltrada.length == 0) {
-        alumnosContenedor.innerHTML = `<div class="mensaje centrado">No hay alumnos con que cumplan aún</div>`
-        return
-    }else {
-        alumnosContenedor.innerHTML = ``
-    }
-
-    listaFiltrada.forEach((alumno) => {
-        const card = document.createElement("article")
-        card.className = "alumno-card"
-        card.innerHTML = `
-            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
-            <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
-            <h3>Promedio: ${alumno.promedio}</h3>
-            <button class="alumno-boton">Más info</button>
-        `
-        card.querySelector(".alumno-boton").addEventListener("click", () => mostrarInfo(alumno))
-        alumnosContenedor.appendChild(card)
-    })
+function ordenarAlumnos(criterio, dato) {
+    const listaOrdenada = listaRenderizada.sort(criterio)
+    renderizarCards(listaOrdenada, "No hay alumnos registrados aún.", dato)
 }

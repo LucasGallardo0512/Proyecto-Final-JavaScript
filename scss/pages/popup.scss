@@ -19,6 +19,42 @@
     }
 }
 
+#alerta {
+    height: 350px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $azul-muyoscuro;
+    .titulo {
+        background-color: $azul;
+    }
+    .info {
+    width: 300px;
+    padding: 15px 5px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em;
+    background-color: $azul-claro;
+    border: $borde;
+    }
+    .boton-salir {
+        width: 100%;
+        padding: 5px;
+        border: $borde;
+        text-align: center;
+        font-size: 1.4em;
+        font-weight: bold;
+        background-color: $azul-claro;
+        transition: background-color .3s;
+        user-select: none;
+    }
+    .boton-salir:hover {
+        background-color: $celeste;
+    }
+}
+
 .info {
     padding: 5px 20px;
     font-weight: bold;
