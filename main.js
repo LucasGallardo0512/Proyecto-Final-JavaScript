@@ -47,7 +47,7 @@ function renderizarCards(lista, mensajeVacio, mensajeCallback = () => "") {
     })
 }
 
-renderizarCards(listaAlumnos, "No hay alumnos registrados aún", alumno => `Curso: ${alumno.curso}`)
+renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
 
 function agregarAlumno() {
     const menuAbierto = document.getElementById("agregar-alumno-menu")
