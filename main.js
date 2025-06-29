@@ -147,6 +147,7 @@ function agregarAlumno() {
         localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
 
         salir("agregar-alumno-menu")
+        salir("alerta")
         renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
     })
 }
@@ -155,6 +156,10 @@ const agregarAlumnoBoton = document.getElementById("agregar-alumno")
 agregarAlumnoBoton.addEventListener("click", agregarAlumno)
 
 function alerta(mensaje) {
+    if (document.getElementById("alerta")) {
+        return
+    }
+
     const ventanaEmergente = document.createElement("article")
     ventanaEmergente.className = "pop-up"
     ventanaEmergente.id = "alerta"
@@ -312,6 +317,8 @@ function abrirMenuFiltro() {
                 break
             case "borrar-filtros":
                 renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
+                const menuCursosAbierto = document.getElementById("cursos-contenedor")
+                menuCursosAbierto.innerHTML = ""
                 break
         }
     })
