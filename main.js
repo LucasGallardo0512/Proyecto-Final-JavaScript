@@ -3,11 +3,12 @@ const listaAlumnos = JSON.parse(localStorage.getItem('lista_alumnos')) || []
 const alumnosContenedor = document.getElementById("alumnos-contenedor")
 let listaRenderizada = []
 
-class alumno {
-    constructor(id, nombre, apellido, curso, notaMate, notaLengua, notaIngles) {
+class Alumno {
+    constructor(id, nombre, apellido, imagen, curso, notaMate, notaLengua, notaIngles) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.imagen = imagen || "img/retrato-alumno.jpg";
         this.curso = curso;
         this.notaMate = notaMate;
         this.notaLengua = notaLengua;
@@ -36,7 +37,7 @@ function renderizarCards(lista, mensajeVacio, mensajeCallback = () => "") {
         const card = document.createElement("article")
         card.className = "alumno-card"
         card.innerHTML = `
-            <img src="img/retrato-alumno.jpg" alt="Foto del Alumno" class="alumno-img">
+            <img src="${alumno.imagen}" alt="Foto del Alumno" class="alumno-img">
             <h2 class="alumno-nombre">${alumno.nombre}<br>${alumno.apellido}</h2>
             <h3>${mensajeCallback(alumno)}</h3>
             <button class="alumno-boton">Más info</button>
@@ -74,6 +75,15 @@ function agregarAlumno() {
                     <input type="text" name="apellido" id="alumno-apellido">
                 </div>
                 <div class="input-contenedor">
+                    <label for="alumno-sexo">Sexo:</label>
+                    <select name="sexo" id="alumno-sexo">
+                        <option value="male">Masculino</option>
+                        <option value="female">Femenino</option>
+                    </select>
+                </div>
+            </div>
+            <div class="columna">
+                <div class="input-contenedor">
                     <label for="alumno-curso">Curso:</label>
                     <select name="curso" id="alumno-curso">
                         <option value="1°">Primer Grado</option>
@@ -84,8 +94,6 @@ function agregarAlumno() {
                         <option value="6°">Sexto Grado</option>
                     </select>
                 </div>
-            </div>
-            <div class="columna">
                 <div class="input-contenedor">
                     <label for="alumno-nota-matematica">Nota de Matemática:</label>
                         <select name="nota-matematica" id="alumno-nota-matematica">
@@ -111,71 +119,96 @@ function agregarAlumno() {
         `
     document.body.append(ventanaEmergente)
     ventanaEmergente.querySelector("#boton-salir").addEventListener("click", () => {
-        salir("agregar-alumno-menu"), salir("alerta")
+        ["agregar-alumno-menu"].forEach(salir)
     })
 
-    ventanaEmergente.addEventListener("submit", (ele) => {
+    ventanaEmergente.addEventListener("submit", async (ele) => {
         ele.preventDefault()
         const id = generarIdUnico()
         const nombre = document.getElementById("alumno-nombre").value
         const apellido = document.getElementById("alumno-apellido").value
+        const sexo = document.getElementById("alumno-sexo").value
         const curso = document.getElementById("alumno-curso").value
         const notaMate = Number(document.getElementById("alumno-nota-matematica").value)
         const notaLengua = Number(document.getElementById("alumno-nota-lengua").value)
         const notaIngles = Number(document.getElementById("alumno-nota-ingles").value)
 
         if (!nombre || !apellido) {
-            alerta("Por favor, completa todos los campos.")
+            swal.fire({
+                title: `<div class="alert-titulo">Por favor, completa todos los campos</div>`,
+                icon: "warning",
+                iconColor: "#cb1818",
+                color: "#000",
+                background: "#1B246B",
+                timer: "3000",
+                timerProgressBar: "true",
+                showConfirmButton: false,
+            })
             return
         }
 
-        const duplicado = listaAlumnos.some(a => a.nombre === nombre && a.apellido === apellido)
+        const duplicado = listaAlumnos.some(a => a.nombre === nombre && a.apellido === apellido && a.curso === curso)
         if (duplicado) {
-            alerta("Ya hay un alumno registrado con ese nombre y apellido.")
+            swal.fire({
+                title: `<div class="alert-titulo">Por favor, completa todos los campos</div>`,
+                icon: "warning",
+                iconColor: "#cb1818",
+                color: "#000",
+                background: "#1B246B",
+                timer: "3000",
+                timerProgressBar: "true",
+                showConfirmButton: false,
+            })
             return
         }
 
-        const contieneNumero = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/
-        if (!contieneNumero.test(nombre) || !contieneNumero.test(apellido)) {
+        const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/
+        if (!soloLetras.test(nombre) || !soloLetras.test(apellido)) {
             alerta("El nombre y el apellido no deben contener números.")
             return
         }
 
-        const nuevoAlumno = new alumno(id, nombre, apellido, curso, notaMate, notaLengua, notaIngles)
+        const imagenAlumno = await crearImagen(sexo) || img/retrato-alumno.jpg
+
+        const nuevoAlumno = new Alumno(id, nombre, apellido, imagenAlumno, curso, notaMate, notaLengua, notaIngles)
         
         listaAlumnos.push(nuevoAlumno)
         localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
 
-        salir("agregar-alumno-menu")
-        salir("alerta")
         renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
+        salir("agregar-alumno-menu")
+        swal.fire({
+            title: `<div class="alert-titulo">Alumno añadido</div>`,
+            icon: "success",
+            color: "#000",
+            background: "#1B246B",
+            timer: "2000",
+            timerProgressBar: "true",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+        })
     })
 }
 
 const agregarAlumnoBoton = document.getElementById("agregar-alumno")
 agregarAlumnoBoton.addEventListener("click", agregarAlumno)
 
-function alerta(mensaje) {
-    if (document.getElementById("alerta")) {
-        return
+async function crearImagen(sexo) {
+    try {
+        let res = await fetch(`https://randomuser.me/api/?gender=${sexo}`)
+        let data = await res.json()
+        return data.results[0].picture.large
+    } catch (error) {
+        alert(error.name)
     }
-
-    const ventanaEmergente = document.createElement("article")
-    ventanaEmergente.className = "pop-up"
-    ventanaEmergente.id = "alerta"
-    ventanaEmergente.innerHTML = `
-    <h2 class="titulo">Alerta</h2>
-    <p class="info">${mensaje}</p>
-    <button class="boton-salir" id="boton-alerta-salir">Cerrar</button>
-    `
-
-    document.body.append(ventanaEmergente)
-    document.getElementById("boton-alerta-salir").addEventListener("click", () => salir("alerta"))
 }
 
 function salir(ventanaID) {
     const ventanaEmergente = document.getElementById(ventanaID)
-    ventanaEmergente.remove()
+    if (ventanaEmergente) {
+        ventanaEmergente.remove()
+    }
 }
 
 function crearOpcionesNota() {
@@ -185,8 +218,6 @@ function crearOpcionesNota() {
     }
     return opcion
 }
-
-
 
 function mostrarInfo(alumno) {
     const menuAbierto = document.getElementById(`alumno-info-${alumno.id}`)
@@ -202,6 +233,7 @@ function mostrarInfo(alumno) {
     ventanaEmergente.id = `alumno-info-${alumno.id}`
     ventanaEmergente.innerHTML = `
     <div class="encabezado">
+        <img src="${alumno.imagen}" alt="Retrato">
         <h2 class="titulo">${alumno.nombre} ${alumno.apellido}</h2>
         <div class="info">
             Curso: ${alumno.curso}
@@ -244,20 +276,22 @@ function eliminarAlumno() {
         const nombres = nombresDeAlumnos()
         if (nombres.length == 0) {
             ventanaEmergente.innerHTML = `
-                <div class="mensaje fondo">
+                <div class="mensaje">
                     No hay alumnos registrados aún
                 </div>
                 <button class="boton-salir" id="boton-salir">Cerrar</button>
-        `}else {
+            `
+        }else {
             ventanaEmergente.innerHTML = `
-            <div class="alumnos-eliminar-contenedor">
-                ${nombres.map((datos, i) => `
-                <div class="alumno-item" data-index="${i}">${datos}
-                    <button class="boton-eliminar" id="boton-eliminar">Eliminar</button>
-                </div>`).join("")}
-            </div>
-            <button class="boton-salir" id="boton-salir">Cerrar</button>
-        `}
+                <div class="alumnos-eliminar-contenedor">
+                    ${nombres.map((datos, i) => `
+                    <div class="alumno-item" data-index="${i}">${datos}
+                        <button class="boton-eliminar" id="boton-eliminar">Eliminar</button>
+                    </div>`).join("")}
+                </div>
+                <button class="boton-salir" id="boton-salir">Cerrar</button>
+            `
+        }
         
         const botonesEliminar = ventanaEmergente.querySelectorAll(".boton-eliminar")
         botonesEliminar.forEach(boton => {
@@ -267,6 +301,18 @@ function eliminarAlumno() {
                 localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
                 renderizarCards(listaAlumnos, "No hay registrados aún.", alumno => `Curso: ${alumno.curso}`)
                 renderizarLista()
+                swal.fire({
+                    title: `<div class="alert-titulo">Alumno eliminado</div>`,
+                    icon: "warning",
+                    iconColor: "#cb1818",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "2000",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                })
             })
         })
         document.getElementById("boton-salir").addEventListener("click", () => salir("eliminar-alumno-menu"))
@@ -311,14 +357,47 @@ function abrirMenuFiltro() {
                 break
             case "promedio-aprobado":
                 filtrarListaPromedio(prom => prom >= 7)
+                swal.fire({
+                    title: `<div class="alert-titulo">Filtro aplicado</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
                 break
             case "promedio-desaprobado":
                 filtrarListaPromedio(prom => prom <= 6)
+                swal.fire({
+                    title: `<div class="alert-titulo">Filtro aplicado</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
                 break
             case "borrar-filtros":
                 renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
                 const menuCursosAbierto = document.getElementById("cursos-contenedor")
                 menuCursosAbierto.innerHTML = ""
+                swal.fire({
+                    title: `<div class="alert-titulo">Filtros eliminados</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
                 break
         }
     })
@@ -375,6 +454,17 @@ function menuCursosYProm(id, curso) {
         menu.remove()
         })
     filtrarPorCurso(curso)
+    swal.fire({
+        title: `<div class="alert-titulo">Filtro aplicado</div>`,
+        icon: "success",
+        color: "#000",
+        background: "#1B246B",
+        timer: "1500",
+        timerProgressBar: "true",
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+    })
 
     const submenu = document.createElement("ul")
     submenu.className = "curso-y-prom-desplegable"
@@ -392,12 +482,45 @@ function menuCursosYProm(id, curso) {
         switch (id) {
             case "curso-aprobados":
                 filtrarPorCursoYProm(curso, "aprobado")
+                swal.fire({
+                    title: `<div class="alert-titulo">Filtros aplicados</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
                 break
             case "curso-desaprobados":
                 filtrarPorCursoYProm(curso, "desaprobado")
+                swal.fire({
+                    title: `<div class="alert-titulo">Filtros aplicados</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
                 break
             case "curso-todos":
                 filtrarPorCursoYProm(curso, "todos")
+                swal.fire({
+                    title: `<div class="alert-titulo">Filtros aplicados</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
                 break
         }
     })
@@ -424,6 +547,35 @@ function filtrarListaPromedio(criterio) {
     renderizarCards(listaFiltrada, "No hay alumnos registrados que cumplan esta condición aún.", alumno => `Promedio: ${alumno.promedio}`)
 }
 
+document.getElementById("ordenar-contenedor").addEventListener("click", (e) => {
+    const boton = e.target
+
+    switch (boton.id) {
+        case "por-curso":
+            menuOrdenarAlumnos("ordenar-curso-contenedor", (a, b) => parseInt(b.curso) - parseInt(a.curso),(a, b) => parseInt(a.curso) - parseInt(b.curso))
+            break
+        case "por-promedio":
+            menuOrdenarAlumnos("ordenar-prom-contenedor", (a, b) => b.promedio - a.promedio,(a, b) => a.promedio - b.promedio)
+            break
+        case "sin-orden":
+            renderizarCards(listaAlumnos, "No hay alumnos registrados aún.", alumno => `Curso: ${alumno.curso}`)
+            swal.fire({
+                    title: `<div class="alert-titulo">Orden eliminado</div>`,
+                    icon: "success",
+                    color: "#000",
+                    background: "#1B246B",
+                    timer: "1500",
+                    timerProgressBar: "true",
+                    toast: true,
+                    position: "bottom-end",
+                    showConfirmButton: false,
+                })
+            const submenuAbierto = document.getElementById("orden-opciones-desplegable");
+            if (submenuAbierto) submenuAbierto.remove()
+            break
+    }
+})
+
 function abrirOrdenarAlumnosMenu() {
     const menuAbierto = document.getElementById("ordenar-desplegable")
     if (menuAbierto) {
@@ -441,25 +593,7 @@ function abrirOrdenarAlumnosMenu() {
         <li class="opciones-orden"><button class="opcion" id="sin-orden">Borrar orden</button></li>
     `
     contenedor.append(ordenarMenu)
-
-    document.getElementById("ordenar-contenedor").addEventListener("click", (e) => {
-        const boton = e.target
-
-        switch (boton.id) {
-            case "por-curso":
-                menuOrdenarAlumnos("ordenar-curso-contenedor",(a, b) => parseInt(b.curso) - parseInt(a.curso),(a, b) => parseInt(a.curso) - parseInt(b.curso))
-                break
-            case "por-promedio":
-                menuOrdenarAlumnos("ordenar-prom-contenedor",(a, b) => b.promedio - a.promedio,(a, b) => a.promedio - b.promedio)
-                break
-            case "sin-orden":
-                renderizarCards(listaAlumnos,"No hay alumnos registrados aún",alumno => `Curso: ${alumno.curso}`)
-                const submenuAbierto = document.getElementById("orden-opciones-desplegable");
-                if (submenuAbierto) submenuAbierto.remove()
-                break
-            }
-    })
-}   
+}
 
 const botonOrdenarMenu = document.getElementById("ordenar-abrir-desplegable")
 botonOrdenarMenu.addEventListener("click", () => abrirOrdenarAlumnosMenu())
@@ -496,4 +630,15 @@ function menuOrdenarAlumnos(contenedor, criterio1, criterio2) {
 function ordenarAlumnos(criterio, dato) {
     const listaOrdenada = listaRenderizada.sort(criterio)
     renderizarCards(listaOrdenada, "No hay alumnos registrados aún.", dato)
+    swal.fire({
+        title: `<div class="alert-titulo">Orden aplicado</div>`,
+        icon: "success",
+        color: "#000",
+        background: "#1B246B",
+        timer: "1500",
+        timerProgressBar: "true",
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+    })
 }

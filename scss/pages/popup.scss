@@ -4,7 +4,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 500px;
+    height: auto;
     width: 700px;
     padding: 25px;
     background-color: $azul-oscuro;
@@ -19,42 +19,6 @@
     }
 }
 
-#alerta {
-    height: 350px;
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    background-color: $azul-muyoscuro;
-    .titulo {
-        background-color: $azul;
-    }
-    .info {
-    width: 300px;
-    padding: 15px 5px;
-    font-weight: bold;
-    text-align: center;
-    font-size: 1.2em;
-    background-color: $azul-claro;
-    border: $borde;
-    }
-    .boton-salir {
-        width: 100%;
-        padding: 5px;
-        border: $borde;
-        text-align: center;
-        font-size: 1.4em;
-        font-weight: bold;
-        background-color: $azul-claro;
-        transition: background-color .3s;
-        user-select: none;
-    }
-    .boton-salir:hover {
-        background-color: $celeste;
-    }
-}
-
 .info {
     padding: 5px 20px;
     font-weight: bold;
@@ -62,6 +26,15 @@
     font-size: 1.3em;
     background-color: $azul-claro;
     border: $borde;
+}
+
+// Alerta
+
+.alert-titulo {
+    border: $borde;
+    background-color: $azul-claro;
+    padding: 5px 0;
+    text-align: center;
 }
 
 // Menu de creacion de alumnos
@@ -75,6 +48,7 @@
         justify-content: space-around;
         align-items: center;
         height: 100%;
+        padding: 10px 0;
         .columna {
             @include column;
             align-items: start;
@@ -161,6 +135,7 @@
     justify-content: space-between;
     gap: 5px;
     font-weight: bold;
+    max-height: 80%;
     .alumnos-eliminar-contenedor {
         display: flex;
         flex-direction: column;
@@ -213,11 +188,18 @@
     flex-direction: column;
     justify-content: space-between;
     .encabezado {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: start;
         gap: 5px;
+        img {
+            border: $borde;
+            position: absolute;
+            left: 0;
+            top: 50%;
+        }
         .info {
             width: 200px;
             padding: 5px 0px;
@@ -226,6 +208,7 @@
     .info-contenedor {
         @include column;
         gap: 15px;
+        padding: 10px 0;
     }
     .boton-salir {
         border: $borde;
