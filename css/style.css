@@ -337,7 +337,7 @@ main #alumnos-contenedor .mensaje-centrado {
   justify-content: space-between;
   gap: 5px;
   font-weight: bold;
-  max-height: 80%;
+  height: 80%;
 }
 .eliminar-alumno-menu .alumnos-eliminar-contenedor {
   display: flex;
@@ -406,6 +406,18 @@ main #alumnos-contenedor .mensaje-centrado {
 .alumno-info .encabezado .info {
   width: 200px;
   padding: 5px 0px;
+}
+.alumno-info .encabezado .info-sexo {
+  padding: 5px 20px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.1em;
+  background-color: #6688B0;
+  border: 5px solid #000;
+  position: absolute;
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 .alumno-info .info-contenedor {
   display: flex;

@@ -4,10 +4,11 @@ const alumnosContenedor = document.getElementById("alumnos-contenedor")
 let listaRenderizada = []
 
 class Alumno {
-    constructor(id, nombre, apellido, imagen, curso, notaMate, notaLengua, notaIngles) {
+    constructor(id, nombre, apellido, sexo, imagen, curso, notaMate, notaLengua, notaIngles,) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.sexo = sexo;
         this.imagen = imagen || "img/retrato-alumno.jpg";
         this.curso = curso;
         this.notaMate = notaMate;
@@ -127,7 +128,7 @@ function agregarAlumno() {
         const id = generarIdUnico()
         const nombre = document.getElementById("alumno-nombre").value
         const apellido = document.getElementById("alumno-apellido").value
-        const sexo = document.getElementById("alumno-sexo").value
+        let sexo = document.getElementById("alumno-sexo").value
         const curso = document.getElementById("alumno-curso").value
         const notaMate = Number(document.getElementById("alumno-nota-matematica").value)
         const notaLengua = Number(document.getElementById("alumno-nota-lengua").value)
@@ -170,7 +171,13 @@ function agregarAlumno() {
 
         const imagenAlumno = await crearImagen(sexo) || img/retrato-alumno.jpg
 
-        const nuevoAlumno = new Alumno(id, nombre, apellido, imagenAlumno, curso, notaMate, notaLengua, notaIngles)
+        if (sexo == "male") {
+            sexo = "Masculino"
+        }else {
+            sexo = "Femenino"
+        }
+
+        const nuevoAlumno = new Alumno(id, nombre, apellido, sexo, imagenAlumno, curso, notaMate, notaLengua, notaIngles)
         
         listaAlumnos.push(nuevoAlumno)
         localStorage.setItem('lista_alumnos', JSON.stringify(listaAlumnos))
@@ -234,6 +241,9 @@ function mostrarInfo(alumno) {
     ventanaEmergente.innerHTML = `
     <div class="encabezado">
         <img src="${alumno.imagen}" alt="Retrato">
+        <div class="info-sexo">
+            Sexo: ${alumno.sexo}
+        </div>
         <h2 class="titulo">${alumno.nombre} ${alumno.apellido}</h2>
         <div class="info">
             Curso: ${alumno.curso}

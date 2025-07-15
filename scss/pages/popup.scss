@@ -135,7 +135,7 @@
     justify-content: space-between;
     gap: 5px;
     font-weight: bold;
-    max-height: 80%;
+    height: 80%;
     .alumnos-eliminar-contenedor {
         display: flex;
         flex-direction: column;
@@ -204,6 +204,18 @@
             width: 200px;
             padding: 5px 0px;
             }
+        .info-sexo {
+            padding: 5px 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1em;
+            background-color: $azul-claro;
+            border: $borde;
+            position: absolute;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
     }
     .info-contenedor {
         @include column;
